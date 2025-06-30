@@ -10,7 +10,7 @@ public:
 	MyActionInitialization();
 	~MyActionInitialization();
 
-	virtual void Build() const;	// main function - runs particle gun and computes steping
+	virtual void Build() const;	// main function - runs particle gun and computes stepping
 };
 
 #endif
