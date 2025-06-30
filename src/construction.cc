@@ -14,39 +14,28 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	// Use this to implement parameters which are predefined for different materials
 	G4NistManager *nist = G4NistManager::Instance(); 
 
-	// Ex. aerogel detector:
-	// Params: <name>, <density>, <#components>
-	G4Material *SiO2 = new G4Material("SiO2", 2.2021*g/cm3, 2);
-	SiO2->AddElement(nist->FindOrBuildElement("Si"), 1);
-	SiO2->AddElement(nist->FindOrBuildElement("O"), 2);
+	G4Material* NaI = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
 
-	// Ex. water:
-	G4Material *H2O = new G4Material("H2O", 1.*g/cm3, 2);
-	H2O->AddElement(nist->FindOrBuildElement("H"), 2);
-	H2O->AddElement(nist->FindOrBuildElement("O"), 1);
-
-	// Ex. carbon:
-	G4Element *C = nist->FindOrBuildElement("C");
-
-	// Ex. aerogel: 
-	G4Material *Aerogel = new G4Material("Aerogel", 0.200*g/cm3, 3);
-	Aerogel->AddMaterial(SiO2, 62.5*perCent);
-	Aerogel->AddMaterial(H2O, 37.4*perCent);
-	Aerogel->AddElement(C, 0.1*perCent);
-
-	// tell geant4 what is the refractive index for a specific photon momentum:
-	G4double energy[2] = {1.239841939*eV/0.9, 1.239841939*eV/0.2};	// blue vs red light
-	//G4double energy[2] = {1.239841939*eV/0.2, 1.239841939*eV/0.9};	// this is the order from tutorial, but outputs error message that energies should be in increasing order
-	G4double rindexAerogel[2] = {1.1, 1.1};	// between 1.05 and 1.2, approximately constant
-	G4double rindexWorld[2] = {1., 1.};	
-
-	G4MaterialPropertiesTable *mptAerogel = new G4MaterialPropertiesTable();
-	mptAerogel->AddProperty("RINDEX", energy, rindexAerogel, 2);	// refractive index
-
-	Aerogel->SetMaterialPropertiesTable(mptAerogel);
+	// Optional: add scintillation properties
+	G4MaterialPropertiesTable* mptNaI = new G4MaterialPropertiesTable();
+	
+	G4double energy[] = { 2.0*eV, 3.5*eV }; // Visible range
+	G4double rindex[] = { 1.85, 1.85 };     // Approximate NaI index
+	G4double scint[]  = { 1.0, 1.0 };       // Relative light yield
+	G4double scintTimeConst = 250*ns;      // Typical decay time
+	
+	mptNaI->AddProperty("RINDEX", energy, rindex, 2);
+	mptNaI->AddProperty("SCINTILLATIONCOMPONENT1", energy, scint, 2);
+	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
+	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0);
+	mptNaI->AddConstProperty("SCINTILLATIONTIMECONSTANT1", scintTimeConst);
+	mptNaI->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
+	
+	NaI->SetMaterialPropertiesTable(mptNaI);
 
 	// Ex. air:
 	G4Material *worldMat = nist->FindOrBuildMaterial("G4_AIR");
+	G4double rindexWorld[2] = {1., 1.};
 
 	// Create another material properties table so that the photons can transmit outside the cherenkov box
 	G4MaterialPropertiesTable *mptWorld = new G4MaterialPropertiesTable();
@@ -66,10 +55,12 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	// parameters: <rotation>, <position>, <logical volume>, <name for phys volume>, <mother volume - if nesting>, boolean if you want to do that, copy number(?), whether it should check for overlaps (give warning)
 	G4VPhysicalVolume *physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "physWorld", 0, false, 0, true);
 
-	// Make the detector box (aerogel)
-	G4Box *solidRadiator = new G4Box("solidRadiator", 0.4*m, 0.4*m, 0.01*m);
-	G4LogicalVolume *logicRadiator = new G4LogicalVolume(solidRadiator, Aerogel, "logicalRadiator");
-	G4VPhysicalVolume *physRadiator = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.25*m), logicRadiator, "physRadiator", logicWorld, false, 0, true); 
+	// Make scintillation crystal
+	G4Box* solidCrystal = new G4Box("solidCrystal", 5.6*cm/2, 43*cm/2, 10*cm/2);
+	G4LogicalVolume* logicCrystal = new G4LogicalVolume(solidCrystal, NaI, "logicCrystal");
+
+	// Place in world
+	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicCrystal, "physCrystal", logicWorld, false, 0, true);
 
 	G4Box *solidDetector = new G4Box("solidDetector", 0.005*m, 0.005*m, 0.01*m);
 	logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
