@@ -21,7 +21,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	G4int copyNo = touchable->GetCopyNumber();
 
 	// Get event ID and global time
-	G4int eventID = TODO->GetEventID();
+	G4int eventID = 1; // TODO get eventID from events
 	G4double time = preStepPoint->GetGlobalTime();
 
 	// Get the physical coordinates of the detector
@@ -31,5 +31,11 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 
 	G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection
 	G4cout << "ID: " << copyNo << " Detector Position: " << posDetector << G4endl;	// output id of detector that detects photon 
-	G4cout << "time: " << time << " s(?)" << G4endl;
+	G4cout << "time: " << time/ 1e9 << " s" << G4endl;
+
+	auto analysisManager = G4AnalysisManager::Instance();
+	analysisManager->FillNtupleIColumn(0, eventID); // ntuple id, column id, value
+	analysisManager->FillNtupleDColumn(1, time);  // time in ns
+	analysisManager->FillNtupleDColumn(2, static_cast<double>(posPhoton.z())); // z position in cm
+	analysisManager->AddNtupleRow();
 }
