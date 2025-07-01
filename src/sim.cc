@@ -30,14 +30,15 @@ int main(int argc, char** argv) {
 	G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
 	// Make UI manager visualize the stuff
-	UImanager->ApplyCommand("/vis/open OGL");						// start the open gl viewer
-	UImanager->ApplyCommand("/vis/view/set/viewpointVector 1 1 1");	// set initial position on detector
-	UImanager->ApplyCommand("/vis/drawVolume");						// draw the volumes that were defined for the detector
+	UImanager->ApplyCommand("/vis/open OGL");							// start the open gl viewer
+	UImanager->ApplyCommand("/vis/drawVolume");							// draw the volumes that were defined for the detector
+	UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 1 0.2 0.2");	// set initial position on detector
+	UImanager->ApplyCommand("/vis/viewer/zoom 1.4");	// set initial position on detector
 
-	UImanager->ApplyCommand("/tracking/verbose 1");	// verbose tracking of the particles
+//	UImanager->ApplyCommand("/tracking/verbose 1");						// verbose tracking of the particles
 
-	UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");	// autorefresh so that the particle tracks are shown 
-	UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");	// draw smooth trajectories of particles in simulation
+	UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");		// autorefresh so that the particle tracks are shown 
+	UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");		// draw smooth trajectories of particles in simulation
 
 	UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");	// Accumulate all events
 

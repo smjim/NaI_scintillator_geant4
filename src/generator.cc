@@ -34,8 +34,7 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 	fParticleGun->SetParticlePosition(pos);
 	fParticleGun->SetParticleMomentumDirection(mom);
-	fParticleGun->SetParticleMomentum(611*keV);	// standard energy unit in Geant is MeV
-	//fParticleGun->SetParticleMomentum(611*keV);	// standard energy unit in Geant is MeV
+	fParticleGun->SetParticleMomentum(661.7*keV);	// standard energy unit in Geant is MeV
 	fParticleGun->SetParticleDefinition(particle);	// combine all the above to particle
 
 	fParticleGun->GeneratePrimaryVertex(anEvent);	// generates one vertex (particle) for the event(?)
