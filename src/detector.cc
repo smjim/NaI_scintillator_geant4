@@ -19,7 +19,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 
 	G4ThreeVector posPhoton = preStepPoint->GetPosition();
 
-	//G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection
+	G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection
 
 	// Get the detector id from each detector for output
 	const G4VTouchable *touchable = aStep->GetPreStepPoint()->GetTouchable();
@@ -29,7 +29,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	G4VPhysicalVolume *physVol = touchable->GetVolume();
 	G4ThreeVector posDetector = physVol->GetTranslation();
 
-	G4cout << "ID: " << copyNo << "Detector Position: " << posDetector << G4endl;	// output id of detector that detects photon 
+	G4cout << "ID: " << copyNo << " Detector Position: " << posDetector << G4endl;	// output id of detector that detects photon 
 
 
 }

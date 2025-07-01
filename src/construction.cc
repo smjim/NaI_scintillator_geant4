@@ -111,26 +111,32 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	G4double pmtRadius = 2.54 * cm;  // 2-inch diameter
 	G4double pmtThickness = 0.5 * cm;
 	
+	/*
 	G4Tubs* solidPMT = new G4Tubs("solidPMT", 0., pmtRadius, pmtThickness / 2, 0., 360. * deg);
 	G4LogicalVolume* logicPMT = new G4LogicalVolume(solidPMT, pmtMat, "logicPMT");
+	*/
 	
 	// Place PMT just outside +z face of the crystal
 	G4double crystalHalfZ = 43.0 * cm / 2;
 	G4double pmtZ = crystalHalfZ + pmtThickness / 2;
 	
+	/*
 	G4VPhysicalVolume* physPMT = new G4PVPlacement(
 		0, G4ThreeVector(0., 0., pmtZ),
 		logicPMT, "physPMT", logicWorld, false, 0, true);
+	*/
 	
 	// Create optical surface between crystal and PMT
+	/*
 	new G4LogicalBorderSurface("CrystalPMTSurface", physCrystal, physPMT, pmtSurface);
+	*/
 
-	// Create detector at end of PMT(?) TODO this is a photon detector and should be electron detector
+	// Create detector at face of PMT
 	// -------------
 	G4Tubs* solidDetector = new G4Tubs("solidDetector", 0., pmtRadius, pmtThickness / 2, 0., 360. * deg);
 	logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
     G4VPhysicalVolume *physDetector = new G4PVPlacement(
-		0, G4ThreeVector(0., 0., pmtZ + 0.05*m), 
+		0, G4ThreeVector(0., 0., pmtZ), 
 		logicDetector, "physDetector", logicWorld, false, 0, true);
 	// -------------
 
