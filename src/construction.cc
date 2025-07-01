@@ -19,14 +19,17 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	// Optional: add scintillation properties
 	G4MaterialPropertiesTable* mptNaI = new G4MaterialPropertiesTable();
 	
-	G4double energy[] = { 2.0*eV, 3.5*eV }; // Visible range
-	G4double rindex[] = { 1.85, 1.85 };     // Approximate NaI index
-	G4double scint[]  = { 1.0, 1.0 };       // Relative light yield
-	G4double scintTimeConst = 250*ns;      // Typical decay time
+	G4double energy[] = { 2.0*eV, 3.5*eV };		// Visible range
+	G4double rindex[] = { 1.85, 1.85 };			// Approximate NaI index
+	G4double scint[]  = { 1.0, 1.0 };			// Relative light yield
+	G4double absorption[] = {1.0*cm, 1.0*cm};	// Absorption length in material
+	G4double scintTimeConst = 250*ns;			// Typical decay time
 	
 	mptNaI->AddProperty("RINDEX", energy, rindex, 2);
 	mptNaI->AddProperty("SCINTILLATIONCOMPONENT1", energy, scint, 2);
-	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
+	mptNaI->AddProperty("ABSLENGTH", energy, absorption, 2);
+	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 1000./MeV);	// for testing
+	//mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
 	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0);
 	mptNaI->AddConstProperty("SCINTILLATIONTIMECONSTANT1", scintTimeConst);
 	mptNaI->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
@@ -43,25 +46,22 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 
 	worldMat->SetMaterialPropertiesTable(mptWorld);
 
-	// Simple world volume example: a box
-	// arguments: <name>, <1/2 size x>, <1/2 size y>, <1/2 size z> 
-	// standard size in Geant is mm, so specify m
+	// Simple box world volume 
 	G4Box *solidWorld = new G4Box("solidWorld", 0.5*m, 0.5*m, 0.5*m);
-
-	// Need to insert material into the world volume:
 	G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
-
-	// Need to create physical volume:
-	// parameters: <rotation>, <position>, <logical volume>, <name for phys volume>, <mother volume - if nesting>, boolean if you want to do that, copy number(?), whether it should check for overlaps (give warning)
 	G4VPhysicalVolume *physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "physWorld", 0, false, 0, true);
 
-	// Make scintillation crystal
-	G4Box* solidCrystal = new G4Box("solidCrystal", 5.6*cm/2, 43*cm/2, 10*cm/2);
+	// Scintillation crystal
+	G4Box* solidCrystal = new G4Box("solidCrystal", 5.6*cm/2, 10*cm/2, 43*cm/2);
 	G4LogicalVolume* logicCrystal = new G4LogicalVolume(solidCrystal, NaI, "logicCrystal");
-
-	// Place in world
 	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicCrystal, "physCrystal", logicWorld, false, 0, true);
 
+	// Reflectix lining of scintillation crystal
+	// TODO reflectix 0.98 reflection?
+
+	// Detectors
+	// TODO change this to a singular PMT mounted on the +z end of the crystal with diameter 2 inches
+	// make the PMT very realistic?
 	G4Box *solidDetector = new G4Box("solidDetector", 0.005*m, 0.005*m, 0.01*m);
 	logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
 	// Creating array of sensitive detectors is slightly more tricky:
@@ -72,9 +72,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 		} 
 	}
 
+
 	return physWorld;
-	// if you want to create more detector parts, place inside world volume
-	// if you want to create another mother volume you need another daughter volume
 }
 
 void MyDetectorConstruction::ConstructSDandField() {

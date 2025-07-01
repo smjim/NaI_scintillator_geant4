@@ -34,6 +34,8 @@ int main(int argc, char** argv) {
 	UImanager->ApplyCommand("/vis/view/set/viewpointVector 1 1 1");	// set initial position on detector
 	UImanager->ApplyCommand("/vis/drawVolume");						// draw the volumes that were defined for the detector
 
+	UImanager->ApplyCommand("/tracking/verbose 1");	// verbose tracking of the particles
+
 	UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");	// autorefresh so that the particle tracks are shown 
 	UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");	// draw smooth trajectories of particles in simulation
 
