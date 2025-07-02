@@ -6,11 +6,15 @@ MyRunAction::MyRunAction()
 MyRunAction::~MyRunAction()
 {}
 
-void MyRunAction::BeginOfRunAction(const G4Run*) {
-	std::cout << "hi" << std::endl;
+void MyRunAction::BeginOfRunAction(const G4Run* run) {
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
 
-	man->OpenFile("output.root");
+	// Create unique filename per run
+	G4int runID = run->GetRunID();
+	std::ostringstream fname;
+	fname << "../output/output_run_" << runID << ".root";
+
+	man->OpenFile(fname.str());
 	man->CreateNtuple("Hits", "Photon Hits");
 	man->CreateNtupleIColumn("eventID");
 	man->CreateNtupleDColumn("time");
@@ -22,5 +26,5 @@ void MyRunAction::EndOfRunAction(const G4Run*) {
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
 
 	man->Write();
-	man->CloseFile("output.root");
+	man->CloseFile();
 }

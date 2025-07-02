@@ -29,13 +29,16 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	G4ThreeVector posDetector = physVol->GetTranslation();
 	G4ThreeVector posPhoton = preStepPoint->GetPosition();
 
-	G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection
-	G4cout << "ID: " << copyNo << " Detector Position: " << posDetector << G4endl;	// output id of detector that detects photon 
-	G4cout << "time: " << time/ 1e9 << " s" << G4endl;
-
+	// Save data to analysis manager for ROOT output
 	auto analysisManager = G4AnalysisManager::Instance();
 	analysisManager->FillNtupleIColumn(0, eventID); // ntuple id, column id, value
 	analysisManager->FillNtupleDColumn(1, time);  // time in ns
 	analysisManager->FillNtupleDColumn(2, static_cast<double>(posPhoton.z())); // z position in cm
 	analysisManager->AddNtupleRow();
+
+/*	// Print output
+	G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection
+	G4cout << "ID: " << copyNo << " Detector Position: " << posDetector << G4endl;	// output id of detector that detects photon 
+	G4cout << "time: " << time/ 1e9 << " s" << G4endl;
+*/
 }

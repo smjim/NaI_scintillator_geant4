@@ -30,7 +30,6 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	mptNaI->AddProperty("RINDEX", energy, rindex, 2);
 	mptNaI->AddProperty("SCINTILLATIONCOMPONENT1", energy, scint, 2);
 	mptNaI->AddProperty("ABSLENGTH", energy, absorption, 2);
-	//mptNaI->AddConstProperty("SCINTILLATIONYIELD", 1000./MeV);	// for testing
 	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
 	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0);
 	mptNaI->AddConstProperty("SCINTILLATIONTIMECONSTANT1", scintTimeConst);
