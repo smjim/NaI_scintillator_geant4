@@ -2,10 +2,14 @@
 #define GENERATOR_HH
 
 #include "G4VUserPrimaryGeneratorAction.hh"
+//#include "G4RadioactiveDecayPhysics.hh"
 
 #include "G4ParticleGun.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ParticleTable.hh" // analogous to NIST table
+#include "G4IonTable.hh"
+
+#include "Randomize.hh"
 
 class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction {
 public: 
@@ -14,9 +18,14 @@ public:
 
 	virtual void GeneratePrimaries(G4Event*);	// creates primaries(?) which can be used by the action initialization 
 
+	void SetUseDecay(bool val) { useDecay = val; }
+
 // Define the particle gun:
 private:
 	G4ParticleGun *fParticleGun;
+	bool useDecay = true;	// toggle between gamma gun and decay source
+
+	G4ThreeVector RandomIsotropicDirection();
 };
 
 #endif

@@ -134,10 +134,32 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	// -------------
 	G4Tubs* solidDetector = new G4Tubs("solidDetector", 0., pmtRadius, pmtThickness / 2, 0., 360. * deg);
 	logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
-    G4VPhysicalVolume *physDetector = new G4PVPlacement(
+	G4VPhysicalVolume *physDetector = new G4PVPlacement(
 		0, G4ThreeVector(0., 0., pmtZ), 
 		logicDetector, "physDetector", logicWorld, false, 0, true);
 	// -------------
+
+	// ----------------------------------------
+	// Render the Cs-137 source / Particle Gun
+	// ----------------------------------------
+	// Define a small sphere at the source location
+	G4double sourceRadius = 1*mm;
+	G4Material* dummyMat = G4Material::GetMaterial("G4_AIR");
+	
+	G4VSolid* sourceSphere = new G4Sphere("SourceSphere", 0., sourceRadius, 0., 360.*deg, 0., 180.*deg);
+	G4LogicalVolume* sourceLogic = new G4LogicalVolume(sourceSphere, dummyMat, "SourceLogic");
+	
+	G4ThreeVector sourcePos = G4ThreeVector(0, 0, -50*cm); // Generator position
+	new G4PVPlacement(0, sourcePos, sourceLogic, "SourcePhys", logicWorld, false, 0);
+	
+	// Make it visible
+	/*
+	G4VisAttributes* visAtt = new G4VisAttributes(G4Colour::Red());
+	visAtt->SetVisibility(true);
+	visAtt->SetForceSolid(true);
+	sourceLogic->SetVisAttributes(visAtt);
+
+*/
 
 	return physWorld;
 }

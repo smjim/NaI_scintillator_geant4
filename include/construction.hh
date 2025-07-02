@@ -10,6 +10,7 @@
 #include "G4SystemOfUnits.hh" // use different pre-implemented units (GeV, rad->deg, meters)
 
 #include "G4Tubs.hh"
+#include "G4Sphere.hh"
 #include "G4Material.hh"
 #include "G4MaterialPropertiesTable.hh"
 #include "G4OpticalSurface.hh"

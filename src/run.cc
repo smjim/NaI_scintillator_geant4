@@ -17,9 +17,15 @@ void MyRunAction::BeginOfRunAction(const G4Run* run) {
 	man->OpenFile(fname.str());
 	man->CreateNtuple("Hits", "Photon Hits");
 	man->CreateNtupleIColumn("eventID");
-	man->CreateNtupleDColumn("time");
+	man->CreateNtupleDColumn("globalTime");
+	man->CreateNtupleDColumn("xPos");
+	man->CreateNtupleDColumn("yPos");
 	man->CreateNtupleDColumn("zPos");
-	man->CreateNtupleDColumn("energy");
+	man->CreateNtupleDColumn("kineticEnergy");
+	man->CreateNtupleDColumn("px");
+	man->CreateNtupleDColumn("py");
+	man->CreateNtupleDColumn("pz");
+	man->CreateNtupleSColumn("creatorProcess");
 	man->FinishNtuple();
 }
 

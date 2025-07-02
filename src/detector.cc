@@ -24,19 +24,29 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	G4VPhysicalVolume *physVol = touchable->GetVolume();
 	G4ThreeVector posDetector = physVol->GetTranslation();
 	G4ThreeVector posPhoton = preStepPoint->GetPosition();
+	G4ThreeVector momPhoton = preStepPoint->GetMomentumDirection();
 
 	// Get particle statistics for output
 	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();	// Particle event ID
 	G4double time = preStepPoint->GetGlobalTime();		// Particle impact global time (ns)
 	G4double energy = preStepPoint->GetKineticEnergy(); // Particle energy (MeV)
-	G4double zpos = static_cast<double>(posPhoton.z());	// Particle impact z position (cm)
+
+	G4String creatorProcess = "primary";
+	if (track->GetCreatorProcess())
+		creatorProcess = track->GetCreatorProcess()->GetProcessName();
 
 	// Save data to analysis manager for ROOT output
 	auto analysisManager = G4AnalysisManager::Instance();
-	analysisManager->FillNtupleIColumn(0, eventID);	// ntuple id, column id, value
-	analysisManager->FillNtupleDColumn(1, time);	// time in ns
-	analysisManager->FillNtupleDColumn(2, zpos);	// z position in cm
-	analysisManager->FillNtupleDColumn(3, energy);	// particle energy (MeV)
+	analysisManager->FillNtupleIColumn(0, eventID);			// Particle event ID 
+	analysisManager->FillNtupleDColumn(1, time);			// Particle impact global time (ns)
+	analysisManager->FillNtupleDColumn(2, static_cast<double>(posPhoton.x()));	// Particle impact x position (cm)
+	analysisManager->FillNtupleDColumn(3, static_cast<double>(posPhoton.y()));	// Particle impact y position (cm)
+	analysisManager->FillNtupleDColumn(4, static_cast<double>(posPhoton.z()));	// Particle impact z position (cm)
+	analysisManager->FillNtupleDColumn(5, energy);			// Particle energy (MeV)
+	analysisManager->FillNtupleDColumn(6, momPhoton.x());		// Particle momentum x (MeV/ c)
+	analysisManager->FillNtupleDColumn(7, momPhoton.y());		// Particle momentum y (Mev/ c)
+	analysisManager->FillNtupleDColumn(8, momPhoton.z());		// Particle momentum z (Mev/ c)
+	analysisManager->FillNtupleSColumn(9, creatorProcess);	// Process responsible for creating particle 
 	analysisManager->AddNtupleRow();
 
 /*	// Print output
