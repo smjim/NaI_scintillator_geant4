@@ -3,6 +3,7 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "G4AnalysisManager.hh"
+#include "G4RunManager.hh"
 
 class MySensitiveDetector : public G4VSensitiveDetector {
 public: 

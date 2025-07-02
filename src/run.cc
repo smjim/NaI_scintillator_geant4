@@ -19,6 +19,7 @@ void MyRunAction::BeginOfRunAction(const G4Run* run) {
 	man->CreateNtupleIColumn("eventID");
 	man->CreateNtupleDColumn("time");
 	man->CreateNtupleDColumn("zPos");
+	man->CreateNtupleDColumn("energy");
 	man->FinishNtuple();
 }
 

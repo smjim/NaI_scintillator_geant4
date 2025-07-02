@@ -20,20 +20,23 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	const G4VTouchable *touchable = aStep->GetPreStepPoint()->GetTouchable();
 	G4int copyNo = touchable->GetCopyNumber();
 
-	// Get event ID and global time
-	G4int eventID = 1; // TODO get eventID from events
-	G4double time = preStepPoint->GetGlobalTime();
-
-	// Get the physical coordinates of the detector
+	// Get the physical coordinates of the detector and particle
 	G4VPhysicalVolume *physVol = touchable->GetVolume();
 	G4ThreeVector posDetector = physVol->GetTranslation();
 	G4ThreeVector posPhoton = preStepPoint->GetPosition();
 
+	// Get particle statistics for output
+	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();	// Particle event ID
+	G4double time = preStepPoint->GetGlobalTime();		// Particle impact global time (ns)
+	G4double energy = preStepPoint->GetKineticEnergy(); // Particle energy (MeV)
+	G4double zpos = static_cast<double>(posPhoton.z());	// Particle impact z position (cm)
+
 	// Save data to analysis manager for ROOT output
 	auto analysisManager = G4AnalysisManager::Instance();
-	analysisManager->FillNtupleIColumn(0, eventID); // ntuple id, column id, value
-	analysisManager->FillNtupleDColumn(1, time);  // time in ns
-	analysisManager->FillNtupleDColumn(2, static_cast<double>(posPhoton.z())); // z position in cm
+	analysisManager->FillNtupleIColumn(0, eventID);	// ntuple id, column id, value
+	analysisManager->FillNtupleDColumn(1, time);	// time in ns
+	analysisManager->FillNtupleDColumn(2, zpos);	// z position in cm
+	analysisManager->FillNtupleDColumn(3, energy);	// particle energy (MeV)
 	analysisManager->AddNtupleRow();
 
 /*	// Print output
