@@ -1,5 +1,5 @@
 void analyzePeakValues() {
-    TFile *file = TFile::Open("run_output_2.root", "READ");
+    TFile *file = TFile::Open("../output/run_output_1.root", "READ");
     //TFile *file = TFile::Open("myoutput_01.root", "READ");
     //TFile *file = TFile::Open("1e6_per_MeV.root", "READ");
     if (!file || file->IsZombie()) {

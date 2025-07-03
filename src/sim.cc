@@ -10,7 +10,14 @@
 #include "physics.hh"
 #include "action.hh"
 
+#include "Randomize.hh"
+#include <ctime>	// for time()
+
 int main(int argc, char** argv) {
+	// Initialize with random seed
+	G4long seed = time(nullptr);
+	G4Random::setTheSeed(seed);
+
 	G4RunManager *runManager = new G4RunManager();
 
 	// Initialize user classes
