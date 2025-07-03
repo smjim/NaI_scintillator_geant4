@@ -1,5 +1,5 @@
 void analyzePeakValuesAggregate() {
-    const int maxFiles = 1000;   // max files to try
+    const int maxFiles = 10000;   // max files to try	// TODO if there are 1000000 then maybe do that if it doesnt crash
     const int nHist = 100;       // number of event histograms per file
 
     TH1D *hPeakValues = new TH1D("hPeakValues", "Histogram of Peak Values; Peak Bin Content; Events", 140, 0, 700);
@@ -8,13 +8,7 @@ void analyzePeakValuesAggregate() {
     for (int f = 0; f < maxFiles; f++) {
         // Generate filename with leading zeros: 00, 001, ... 999
         TString fileName;
-        if (f < 10) {
-            fileName = TString::Format("../output/run_output_00%d.root", f);
-        } else if (f < 100) {
-            fileName = TString::Format("../output/run_output_0%d.root", f);
-        } else {
-            fileName = TString::Format("../output/run_output_%d.root", f);
-        }
+		fileName = TString::Format("../output/run_output_%06d.root", f);
 
         TFile *file = TFile::Open(fileName, "READ");
         if (!file || file->IsZombie()) {
