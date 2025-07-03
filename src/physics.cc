@@ -3,7 +3,6 @@
 // NaI scintillator with PMT 
 MyPhysicsList::MyPhysicsList() {
 	RegisterPhysics (new G4EmStandardPhysics());		// EM interactions
-	RegisterPhysics (new G4DecayPhysics());				// radioactive decay
 	RegisterPhysics (new G4RadioactiveDecayPhysics());	// radioactive decay
 	
 	RegisterPhysics (new G4OpticalPhysics());			// Optical Physics

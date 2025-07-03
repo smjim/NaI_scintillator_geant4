@@ -1,5 +1,7 @@
 #include "detector.hh"
 
+std::vector<G4double> MySensitiveDetector::arrivalTimes;
+
 MySensitiveDetector::MySensitiveDetector(G4String name) : G4VSensitiveDetector(name) {
 
 }
@@ -16,6 +18,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	G4StepPoint *preStepPoint = aStep->GetPreStepPoint();	// when photon enters detector
 	G4StepPoint *postStepPoint = aStep->GetPostStepPoint();	// when photon leaves detector
 
+	/*
 	// Get the detector id from detector for output
 	const G4VTouchable *touchable = aStep->GetPreStepPoint()->GetTouchable();
 	G4int copyNo = touchable->GetCopyNumber();
@@ -28,7 +31,9 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 
 	// Get particle statistics for output
 	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();	// Particle event ID
+	*/
 	G4double time = preStepPoint->GetGlobalTime();		// Particle impact global time (ns)
+	/*
 	G4double energy = preStepPoint->GetKineticEnergy(); // Particle energy (MeV)
 
 	G4String creatorProcess = "primary";
@@ -42,12 +47,18 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	analysisManager->FillNtupleDColumn(2, static_cast<double>(posPhoton.x()));	// Particle impact x position (cm)
 	analysisManager->FillNtupleDColumn(3, static_cast<double>(posPhoton.y()));	// Particle impact y position (cm)
 	analysisManager->FillNtupleDColumn(4, static_cast<double>(posPhoton.z()));	// Particle impact z position (cm)
-	analysisManager->FillNtupleDColumn(5, energy);			// Particle energy (MeV)
+	analysisManager->FillNtupleDColumn(5, energy*1e6);			// Particle energy (eV)
 	analysisManager->FillNtupleDColumn(6, momPhoton.x());		// Particle momentum x (MeV/ c)
 	analysisManager->FillNtupleDColumn(7, momPhoton.y());		// Particle momentum y (Mev/ c)
 	analysisManager->FillNtupleDColumn(8, momPhoton.z());		// Particle momentum z (Mev/ c)
 	analysisManager->FillNtupleSColumn(9, creatorProcess);	// Process responsible for creating particle 
 	analysisManager->AddNtupleRow();
+	*/
+
+	// Save arrival times for event
+	arrivalTimes.push_back(time);
+
+	return true;
 
 /*	// Print output
 	G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection

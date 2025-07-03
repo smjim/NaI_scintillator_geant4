@@ -2,7 +2,7 @@
 
 // constructor
 MyPrimaryGenerator::MyPrimaryGenerator() {
-	fParticleGun = new G4ParticleGun(1000); // # particles per event
+	fParticleGun = new G4ParticleGun(1); // # particles per event
 }
 
 // destructor
@@ -26,6 +26,13 @@ G4ThreeVector MyPrimaryGenerator::RandomIsotropicDirection() {
 */ /////////////////////////////////////
 
 void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent) {
+    // -------------
+    // Source from back
+    // -------------
+	// Source position (cm), match with construction.cc
+	//G4double source_pos = -50.0; 	// - is behind, + is in front (PMT side)
+    // -------------
+
 	if (useDecay) {	// simulate Cs-137 ion decay
 		// Simulate the Cs atom sitting there
 		/*	
@@ -38,13 +45,23 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent) {
 		fParticleGun->GeneratePrimaryVertex(anEvent);
 		*/
 
+
 		// Manually simulate the decay processes associated with Cs-137
 		G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 		G4ParticleDefinition* beta = particleTable->FindParticle("e-");
 		G4ParticleDefinition* gamma = particleTable->FindParticle("gamma");
 
-		// Source position
-		G4ThreeVector sourcePos(0., 0., -50.0*cm);
+    	// -------------
+    	// Source from back
+    	// -------------
+		/*
+		G4ThreeVector sourcePos(0., 0., source_pos*cm);
+		*/
+	    // -------------
+	    // Source from side closest to PMT
+	    // -------------
+		G4ThreeVector sourcePos(20.0*cm, 0, 15.0*cm);
+	    // -------------
 
 		// Generate branching ratio
 		double rand = G4UniformRand();
@@ -76,8 +93,21 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent) {
 		G4ParticleDefinition *gamma = G4ParticleTable::GetParticleTable()->FindParticle("gamma");	
 		fParticleGun->SetParticleDefinition(gamma);
 		fParticleGun->SetParticleEnergy(661.7*keV);	
-		fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -50.0*cm));
+
+	    // -------------
+	    // Source from back
+	    // -------------
+		/*
+		fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., source_pos*cm));
 		fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));	
+		*/
+	    // -------------
+	    // Source from side closest to PMT
+	    // -------------
+		fParticleGun->SetParticlePosition(G4ThreeVector(20.0*cm, 0, 15.0*cm));
+		fParticleGun->SetParticleMomentumDirection(G4ThreeVector(-1., 0., 0.));	
+    	// -------------
+
 		fParticleGun->GeneratePrimaryVertex(anEvent);
 	}
 

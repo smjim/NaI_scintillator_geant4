@@ -23,7 +23,7 @@ public:
 // Define the particle gun:
 private:
 	G4ParticleGun *fParticleGun;
-	bool useDecay = true;	// toggle between gamma gun and decay source
+	bool useDecay = false;	// toggle between gamma gun and decay source
 
 	G4ThreeVector RandomIsotropicDirection();
 };

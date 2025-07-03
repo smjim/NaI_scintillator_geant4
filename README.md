@@ -16,3 +16,6 @@ UCNProBe
  - (2) Radiation source instead of (alternative to) particle gun
  - (3) Once simulation can be compared to real life, make sure parameters and simulation is as accurate as possible from first principles
 
+
+# NOTES:
+ - In order to toggle realistic decay vs particle gun, modify the default boolean in include/generator.hh

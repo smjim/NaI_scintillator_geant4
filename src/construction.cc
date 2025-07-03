@@ -30,7 +30,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	mptNaI->AddProperty("RINDEX", energy, rindex, 2);
 	mptNaI->AddProperty("SCINTILLATIONCOMPONENT1", energy, scint, 2);
 	mptNaI->AddProperty("ABSLENGTH", energy, absorption, 2);
-	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
+	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 1e5/MeV);	// artificially large to capture more events
+	//mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
 	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0);
 	mptNaI->AddConstProperty("SCINTILLATIONTIMECONSTANT1", scintTimeConst);
 	mptNaI->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
@@ -107,7 +108,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	// 2'' diameter PMT coupled to front of crystal
 	// ----------------------------------------
 
-	G4double pmtRadius = 2.54 * cm;  // 2-inch diameter
+	G4double pmtRadius = 1.5 * 2.54 * cm;  // 3-inch diameter
 	G4double pmtThickness = 0.5 * cm;
 	
 	/*
@@ -145,22 +146,29 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	// Define a small sphere at the source location
 	G4double sourceRadius = 1*mm;
 	G4Material* dummyMat = G4Material::GetMaterial("G4_AIR");
-	
+
 	G4VSolid* sourceSphere = new G4Sphere("SourceSphere", 0., sourceRadius, 0., 360.*deg, 0., 180.*deg);
 	G4LogicalVolume* sourceLogic = new G4LogicalVolume(sourceSphere, dummyMat, "SourceLogic");
 	
-	G4ThreeVector sourcePos = G4ThreeVector(0, 0, -50*cm); // Generator position
-	new G4PVPlacement(0, sourcePos, sourceLogic, "SourcePhys", logicWorld, false, 0);
-	
-	// Make it visible
+	// Source displacement from center, match with generator.cc
+
+	// -------------
+	// Source from back
+	// -------------
 	/*
-	G4VisAttributes* visAtt = new G4VisAttributes(G4Colour::Red());
-	visAtt->SetVisibility(true);
-	visAtt->SetForceSolid(true);
-	sourceLogic->SetVisAttributes(visAtt);
+	G4double source_pos = -50.0; // source position (cm), - is behind, + is in front (PMT side)
+	G4ThreeVector sourcePos = G4ThreeVector(0, 0, source_pos*cm); // Generator position
+	new G4PVPlacement(0, sourcePos, sourceLogic, "SourcePhys", logicWorld, false, 0);
+	*/
+	
+	// -------------
+	// Source from side closest to PMT 
+	// -------------
+	G4ThreeVector sourcePos = G4ThreeVector(20.0*cm, 0, 15.0*cm); // Generator position
+	new G4PVPlacement(0, sourcePos, sourceLogic, "SourcePhys", logicWorld, false, 0);
 
-*/
-
+	// -------------
+	
 	return physWorld;
 }
 
