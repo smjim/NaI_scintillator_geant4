@@ -1,4 +1,5 @@
 #include "run.hh"
+#include <cstdlib>	// for std::getenv
 
 MyRunAction::MyRunAction()
 {}
@@ -9,15 +10,20 @@ MyRunAction::~MyRunAction()
 void MyRunAction::BeginOfRunAction(const G4Run* run) {
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
 
-	std::ostringstream fname;
-	fname << "../output/output.root";
-	//G4cout << "Writing to " << fname << G4endl;
+	// Get outfile from environment variable
+	const char* outfile_env = std::getenv("OUTFILE");
+	
+	// Default to output.root if not set
+	G4String filename = (outfile_env != nullptr) ? G4String(outfile_env) : "output";
+	G4cout << "Writing to " << filename << G4endl;
 
 	// Sanity check
 	G4int RunID = run->GetRunID();
-	G4cout << " >>> Begin Run " << RunID << G4endl;
+	G4cout << ">>> Begin Run " << RunID << G4endl;
 
-	man->OpenFile(fname.str());
+	man->SetFileName(filename);
+	man->OpenFile();
+
 	/*
 	man->CreateNtuple("TimeHist", "Photon Arrival Time Histograms");
 	man->CreateNtupleIColumn("eventID");
@@ -41,7 +47,7 @@ void MyRunAction::EndOfRunAction(const G4Run* run) {
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
 
 	G4int RunID = run->GetRunID();
-	G4cout << " >>> End Run " << RunID << G4endl;
+	G4cout << ">>> End Run " << RunID << G4endl;
 
 	man->Write();
 	man->CloseFile();

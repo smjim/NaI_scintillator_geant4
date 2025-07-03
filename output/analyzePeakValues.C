@@ -1,13 +1,15 @@
 void analyzePeakValues() {
-    TFile *file = TFile::Open("output.root", "READ");
+    TFile *file = TFile::Open("run_output_2.root", "READ");
+    //TFile *file = TFile::Open("myoutput_01.root", "READ");
     //TFile *file = TFile::Open("1e6_per_MeV.root", "READ");
     if (!file || file->IsZombie()) {
         std::cerr << "Error: Could not open file!" << std::endl;
         return;
     }
 
-    const int nHist = 10; // Number of event histograms
-    TH1D *hPeakValues = new TH1D("hPeakValues", "Histogram of Peak Values; Peak Bin Content; Events", 50, 0, 10000);
+    const int nHist = 100; // Number of event histograms
+    TH1D *hPeakValues = new TH1D("hPeakValues", "Histogram of Peak Values; Peak Bin Content; Events", 50, 0, 1000);
+    //TH1D *hPeakValues = new TH1D("hPeakValues", "Histogram of Peak Values; Peak Bin Content; Events", 50, 0, 10000);
 
     for (int i = 0; i < nHist; i++) {
         TString histName = TString::Format("arrivalTimes_evt%d", i);

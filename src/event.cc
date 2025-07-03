@@ -26,13 +26,12 @@ void MyEventAction::EndOfEventAction(const G4Event* event) {
 	// Fill histogram 
 	for (auto t : MySensitiveDetector::arrivalTimes) {
 		analysisManager->FillH1(histID, t);
-//		analysisManager->AddNtupleRow();
 	}
 
 	// Clear for next event
 	MySensitiveDetector::arrivalTimes.clear();
 
-	G4cout << "[DEBUG] Ending EventAction for event " << event->GetEventID() << G4endl;
+	G4cout << " >> Ending EventAction for event " << event->GetEventID() << G4endl;
 
 	/*
     std::vector<int> hist(nbins, 0);
