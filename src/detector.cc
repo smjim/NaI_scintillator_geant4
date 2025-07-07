@@ -11,12 +11,20 @@ MySensitiveDetector::~MySensitiveDetector() {
 }
 
 G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist) {
+
 	G4Track *track = aStep->GetTrack();
 	track->SetTrackStatus(fStopAndKill);	// once a photon is detected, kill it so that it doesnt propagate any more
 
 	// Get start and end points
 	G4StepPoint *preStepPoint = aStep->GetPreStepPoint();	// when photon enters detector
 	G4StepPoint *postStepPoint = aStep->GetPostStepPoint();	// when photon leaves detector
+
+	G4double time = preStepPoint->GetGlobalTime();		// Particle impact global time (ns)
+
+	// Save arrival times for event
+	arrivalTimes.push_back(time);
+
+	return true;
 
 	/*
 	// Get the detector id from detector for output
@@ -31,9 +39,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 
 	// Get particle statistics for output
 	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();	// Particle event ID
-	*/
-	G4double time = preStepPoint->GetGlobalTime();		// Particle impact global time (ns)
-	/*
+
 	G4double energy = preStepPoint->GetKineticEnergy(); // Particle energy (MeV)
 
 	G4String creatorProcess = "primary";
@@ -55,14 +61,10 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 	analysisManager->AddNtupleRow();
 	*/
 
-	// Save arrival times for event
-	arrivalTimes.push_back(time);
-
-	return true;
-
-/*	// Print output
+	/*	
+	// Print output
 	G4cout << "Photon position: " << posPhoton << G4endl;	// output position of detection
 	G4cout << "ID: " << copyNo << " Detector Position: " << posDetector << G4endl;	// output id of detector that detects photon 
 	G4cout << "time: " << time/ 1e9 << " s" << G4endl;
-*/
+	*/
 }

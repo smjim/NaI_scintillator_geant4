@@ -2,7 +2,6 @@
 #define GENERATOR_HH
 
 #include "G4VUserPrimaryGeneratorAction.hh"
-//#include "G4RadioactiveDecayPhysics.hh"
 
 #include "G4ParticleGun.hh"
 #include "G4SystemOfUnits.hh"
@@ -11,6 +10,12 @@
 
 #include "Randomize.hh"
 
+enum class GeneratorMode {
+	CsOnly,		// use Cs-137 decay (Ba) gamma gun 
+	CsAndCo,	// use Cs-137 decay (Ba) gamma gun and Co-60 decay gamma gun
+	CsDecay		//imulate Cs-137 ion sitting there and emitting isotropically
+};
+
 class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction {
 public: 
 	MyPrimaryGenerator();
@@ -18,12 +23,12 @@ public:
 
 	virtual void GeneratePrimaries(G4Event*);	// creates primaries(?) which can be used by the action initialization 
 
-	void SetUseDecay(bool val) { useDecay = val; }
+	void SetGeneratorMode(GeneratorMode mode) { fMode = mode; }
 
 // Define the particle gun:
 private:
 	G4ParticleGun *fParticleGun;
-	bool useDecay = false;	// toggle between gamma gun and decay source
+	GeneratorMode fMode = GeneratorMode::CsOnly;
 
 	G4ThreeVector RandomIsotropicDirection();
 };
