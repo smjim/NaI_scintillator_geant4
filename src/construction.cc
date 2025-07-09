@@ -21,17 +21,17 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 	G4Material* NaI = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
 	G4MaterialPropertiesTable* mptNaI = new G4MaterialPropertiesTable();
 	
-	G4double energy[] = { 2.0*eV, 3.5*eV };		// Visible range
-	G4double rindex[] = { 1.85, 1.85 };			// Approximate NaI index
-	G4double scint[]  = { 1.0, 1.0 };			// Relative light yield
+	G4double energy[] = { 2.0*eV, 3.5*eV };		// Visible range	// 413nm is maximum probability emission
+	G4double rindex[] = { 1.775, 1.775 };			// Approximate NaI index
+	G4double scint[]  = { 23000.0, 23000.0 };			// Relative light yield (to anthracene)
 	G4double absorption[] = {20.0*cm, 20.0*cm};	// Absorption length in material
-	G4double scintTimeConst = 250*ns;			// Typical decay time
+	G4double scintTimeConst = 230*ns;			// Typical decay time
 	
 	mptNaI->AddProperty("RINDEX", energy, rindex, 2);
 	mptNaI->AddProperty("SCINTILLATIONCOMPONENT1", energy, scint, 2);
 	mptNaI->AddProperty("ABSLENGTH", energy, absorption, 2);
-	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 1e5/MeV);	// artificially large to capture more events
-	//mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
+	//mptNaI->AddConstProperty("SCINTILLATIONYIELD", 1e5/MeV);	// artificially large to capture more events
+	mptNaI->AddConstProperty("SCINTILLATIONYIELD", 38000./MeV);
 	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0);
 	mptNaI->AddConstProperty("SCINTILLATIONTIMECONSTANT1", scintTimeConst);
 	mptNaI->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
